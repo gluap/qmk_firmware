@@ -26,3 +26,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define EE_HANDS
 // Rows are doubled-up
 #define TAPPING_TERM 200
+
+#define OLED_DISPLAY_128X64

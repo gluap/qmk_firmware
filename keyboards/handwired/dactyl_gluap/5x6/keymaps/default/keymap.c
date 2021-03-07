@@ -2,6 +2,7 @@
 
 #include QMK_KEYBOARD_H
 #include <keymap_german.h>
+#include <stdlib.h>
 
 
 #define _QWERTY 0
@@ -32,7 +33,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                                              _______,_______,            _______,_______,
                                              _______,_______,            _______,_______
-
   ),
 
   [_RAISE] = LAYOUT_5x6(
@@ -46,3 +46,68 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                _______,_______,            _______,_______
   ),
 };
+int timer = 0;
+char wpm_text[5]="asdf";
+int x = 64;
+int currwpm = 0;
+
+//USER CONFIG PARAMS
+float max_wpm = 140.0f; //WPM value at the top of the graph window
+int graph_refresh_interval = 160; //in milliseconds
+int graph_area_fill_interval = 64;
+
+#ifdef OLED_DRIVER_ENABLE
+
+void oled_task_user(void) {
+
+	//get current WPM value
+	currwpm = get_current_wpm();
+  itoa(currwpm ,wpm_text,10);
+
+	//check if it's been long enough before refreshing graph
+	if(timer_elapsed(timer) > graph_refresh_interval){
+
+		// main calculation to plot graph line
+		x = 64- ((currwpm / max_wpm) * 64);
+
+		//first draw actual value line
+		oled_write_pixel(1, x, true);
+
+		//then fill in area below the value line
+		for(int i = 64; i > x; i-=2){
+			if(i % graph_area_fill_interval == 0){
+				oled_write_pixel(1, i, true);
+			}
+		}
+
+		//then move the entire graph one pixel to the right
+		oled_pan(false); 
+
+		//refresh the timer for the next iteration
+		timer = timer_read();
+
+	}fuckery is fucker aölksjdf,.ökjpl<
+	//format current WPM value into a printable string
+	
+
+	//formatting for triple digit WPM vs double digits, then print WPM readout
+	if(currwpm>100){
+		oled_set_cursor(14, 7);
+		oled_write("WPM: ", false);
+		oled_set_cursor(18, 7);
+		oled_write(wpm_text, false);
+	} else if (currwpm >= 10){
+		oled_set_cursor(15, 7);
+		oled_write("WPM: ", false);
+		oled_set_cursor(19, 7);
+		oled_write(wpm_text, false);
+	} else if (currwpm>0) {
+		oled_set_cursor(16, 7);
+		oled_write("WPM: ", false);
+    oled_set_cursor(20, 7);
+		oled_write(wpm_text, false);		
+	}
+
+}
+
+#endif 

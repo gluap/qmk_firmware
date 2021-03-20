@@ -47,6 +47,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 int timer = 0;
+int timer2 =0;
 char wpm_text[5]="asdf";
 int x = 64;
 int currwpm = 0;
@@ -68,13 +69,13 @@ void oled_task_user(void) {
 	if(timer_elapsed(timer) > graph_refresh_interval){
 
 		// main calculation to plot graph line
-		x = 64- ((currwpm / max_wpm) * 64);
+		x = 64- ((currwpm / max_wpm) * 48);
 
 		//first draw actual value line
 		oled_write_pixel(1, x, true);
 
 		//then fill in area below the value line
-		for(int i = 64; i > x; i-=2){
+		for(int i = 60; i > x; i-=2){
 			if(i % graph_area_fill_interval == 0){
 				oled_write_pixel(1, i, true);
 			}
@@ -86,7 +87,7 @@ void oled_task_user(void) {
 		//refresh the timer for the next iteration
 		timer = timer_read();
 
-	}fuckery is fucker aölksjdf,.ökjpl<
+	}
 	//format current WPM value into a printable string
 	
 
@@ -107,6 +108,40 @@ void oled_task_user(void) {
     oled_set_cursor(20, 7);
 		oled_write(wpm_text, false);		
 	}
+
+
+oled_set_cursor(0, 0);
+      // Host Keyboard Layer Status
+    
+
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            oled_write_P(PSTR("        "), false);
+            break;
+        case _RAISE:
+            oled_write_P(PSTR("PgupDown"), false);
+            break;
+        case _LOWER:
+            oled_write_P(PSTR("Arrows"), false);
+            break;
+        default:
+            // Or use the write_ln shortcut over adding '\n' to the end of your string
+            oled_write_ln_P(PSTR("Undefined"), false);
+    }
+oled_set_cursor(1, 1);
+
+    // Host Keyboard LED Status
+    led_t led_state = host_keyboard_led_state();
+    if((led_state.num_lock  || led_state.caps_lock || led_state.scroll_lock) ){
+    oled_write_P(led_state.num_lock ? PSTR(" NUM") : PSTR("    "), false);
+    oled_write_P(led_state.caps_lock ? PSTR(" CAP") : PSTR("    "), false);
+    oled_write_P(led_state.scroll_lock ? PSTR(" SCR") : PSTR("    "), false);
+    } else if (!(led_state.num_lock  || led_state.caps_lock || led_state.scroll_lock) && (timer_elapsed(timer2) > graph_refresh_interval*128)) {
+      oled_set_cursor(0, 1);
+
+      oled_write_P(PSTR(" gluap ") ,false);
+      timer2 =timer_read(); 
+    }
 
 }
 

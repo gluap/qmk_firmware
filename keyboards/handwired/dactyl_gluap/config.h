@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0x444D
-#define MANUFACTURER    tshort
+#define MANUFACTURER    gluap
 
 /* mouse config */
 #define MOUSEKEY_INTERVAL       20
@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_WHEEL_DELAY 0
 
 /* Set 0 if debouncing isn't needed */
-#define DEBOUNCE 5
+#define DEBOUNCE 2
 
 /* serial.c configuration for split keyboard */
 #define SOFT_SERIAL_PIN D0

@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PRODUCT_ID      0x3537
 #define DEVICE_VER      0x0001
-#define PRODUCT         Dactyl-Manuform (5x7)
+#define PRODUCT         E-Warp
 
 /* key matrix size */
 // Rows are doubled-up

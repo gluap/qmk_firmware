@@ -44,3 +44,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* number of backlight levels */
 // #define BACKLIGHT_LEVELS 3
+
+#define IS_COMMAND() ( keyboard_report->mods == (MOD_BIT(KC_LSFT) | MOD_BIT(KC_LCTRL)| MOD_BIT(KC_LALT) ))
+#define BOOTMAGIC_KEY_SALT              KC_LGUI

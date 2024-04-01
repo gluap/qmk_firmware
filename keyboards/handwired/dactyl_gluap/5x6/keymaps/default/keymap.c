@@ -49,6 +49,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 int timer = 0;
 int timer2 =0;
+int last_typing = 0;
+bool logo= false;
 char wpm_text[5]="asdf";
 int x = 64;
 int currwpm = 0;
@@ -59,15 +61,29 @@ int graph_refresh_interval = 160; //in milliseconds
 int graph_area_fill_interval = 64;
 
 #ifdef OLED_ENABLE
+static void render_logo(void) {
+    static const char PROGMEM raw_logo[] = {
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,224, 48, 24, 12,  4,  4,  6,  6,  6,  6,  4, 12, 12, 12, 12,  4,  6,  6,  6,  6,  6,  4,  4,  8, 24, 48, 32,192,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,192, 64, 64,192, 64,  0,240,  0,  0,192,  0,  0,  0,192,  0,  0, 64, 64, 64,192,  0,  0,192, 64, 64, 64,128,  0,  0,  0,  0,  0,128, 64, 64,192,  0,  0,  0,  0,  0, 64,128,  0,128, 64,128,  0,128, 64,  0, 64, 64, 64,192,  0,  0,192, 64, 64,  0,192, 64, 64, 64,128,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,224, 28,  6,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3, 14, 56,192,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 48, 79, 74, 74,105, 48,  0, 15,  0,  0, 15,  8,  8,  8, 15,  0,  0, 15,  9,  9, 15,  0,  0,127,  8,  8,  8,  7,  0,  0,  0,  0,  0,  7,  9,  9,  9,  0,  0,  2,  2,  0,  0,  7, 12,  3,  0,  7,  8,  7,  0,  0, 15,  9,  9, 15,  0,  0, 15,  0,  0,  0,127,  8,  8,  8,  7,
+        0,  0,192, 96, 16, 16, 24,  8,  4,  4,  6,130,130,194,243,241,243,242,242,242,243,241,241,241,241,241,241,242,242,243,241,241,241,241,241,241,241,241,241,241,241,241,243,242,242,246,228,228,228,197,199,140,  8,  8,  8, 16, 16, 48, 32, 96, 64,192,  0,  0,  0,  0,  0,  0,192,  0,  0,  0,192,  0,  0,192, 64, 64,  0,  0,208,  0,  0,192, 64, 64, 64,128,  0,  0,192, 64, 64,192, 64,  0,  0,  0,  0,128, 64, 64, 64,192,  0,  0,192, 64, 64,192,128, 64, 64,192,  0,  0,240,  0,128, 64,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  7, 28, 16, 48, 32, 32,160,248,252,255,255,255,255,255,255,255,255,127,127,127,255,255,255,255,255,255,255,255,255,127,127, 63,191,191, 63,127,127,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,240,224, 48, 16, 16, 24, 12,  7,  3,  0,  0,  0,  0,  0, 15,  8,  8,  8, 15,  0,  0,  9,  9, 10,  4,  0, 15,  0,  0, 15,  0,  0,  0, 15,  0, 48, 79, 74, 74,105, 48,  0,  0,  0,  0,  7,  8,  8,  8,127,  0,  0, 15,  0,  0,  0, 15,  0,  0, 15,  0,  0, 15,  1,  2, 12,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,248,255,255,255,255,255,255,255,255,255,  0,254,255,255,255,240,241,243, 15,255,255,255,  3,120,254,255,255,255,255,255,248,248,248,  1,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,252,  0,  0,  0,  0,  0,192, 64, 64,192, 64,  0,208,  0, 64,224, 64, 64,  0,240, 64, 64, 64,128,  0,  0,192,  0,  0,  0,192,  0,  0,240, 64, 64, 64,128,  0,  0,  0,  0,  0,128, 64, 64, 64,  0,128, 64, 64, 64,128,  0,  0,192, 64, 64,192,128, 64, 64,192,  0,  0,  0,224, 16,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  3, 31,255,255,255,255,255,255,255,255,254,190, 62, 62, 62, 62, 62, 62, 62, 63, 63, 63, 63, 63, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62,127,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  1,  0,  0,  0,  0, 48, 79, 74, 74,105, 48,  0, 15,  0,  0, 15,  8,  8,  0, 15,  0,  0,  0, 15,  0,  0, 15,  8,  8,  8, 15,  0,  0, 15,  8,  8,  8,  7,  0,  0,  8,  0,  0,  7,  8,  8,  8,  0,  7,  8,  8,  8,  7,  0,  0, 15,  0,  0,  0, 15,  0,  0, 15,  0,  8,  7,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  1,  7, 15, 63,127,255,255,255,255,255,254,248,240,224,192,128,  0,  0,  0,128,192,224,224,240,240,240,240,240, 96,  0,128,192,248,255,255,255,255,255,255,255,255,255,127, 63, 31,  7,  3,  0,  0,  0,  0,  0,  0,  0,192, 64, 64,192, 64,  0,240,  0,  0,192,  0,  0,  0,192,  0,  0, 64, 64, 64,192,  0,  0,192, 64, 64, 64,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  3,  7, 15, 31, 63, 63,127,127,127,127,127,126,126,126,126,254,254,254,254,254,126,126,127,127,127,127,127, 63, 63, 15,  7,  7,  3,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 48, 79, 74, 74,105, 48,  0, 15,  0,  0, 15,  8,  8,  8, 15,  0,  0, 15,  9,  9, 15,  0,  0,127,  8,  8,  8,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    };
+    oled_write_raw_P(raw_logo, sizeof(raw_logo));
+}
 
 bool oled_task_user(void) {
 
 	//get current WPM value
 	currwpm = get_current_wpm();
-  itoa(currwpm ,wpm_text,10);
+    itoa(currwpm ,wpm_text, 10);
+
 
 	//check if it's been long enough before refreshing graph
-	if(timer_elapsed(timer) > graph_refresh_interval){
+	if((timer_elapsed(timer) > graph_refresh_interval) && (timer_elapsed(last_typing) < 128*graph_refresh_interval)){
 
 		// main calculation to plot graph line
 		x = 64- ((currwpm / max_wpm) * 48);
@@ -88,7 +104,12 @@ bool oled_task_user(void) {
 		//refresh the timer for the next iteration
 		timer = timer_read();
 
-	}
+	} else if  (timer_elapsed(last_typing) > 128*graph_refresh_interval) {
+        render_logo();
+        logo = true;
+    }
+
+
 	//format current WPM value into a printable string
 
 
@@ -98,22 +119,32 @@ bool oled_task_user(void) {
 		oled_write("WPM: ", false);
 		oled_set_cursor(18, 7);
 		oled_write(wpm_text, false);
+		last_typing = timer_read();
+		logo=false;
 	} else if (currwpm >= 10){
 		oled_set_cursor(15, 7);
 		oled_write("WPM: ", false);
 		oled_set_cursor(19, 7);
 		oled_write(wpm_text, false);
+		last_typing = timer_read();
+				logo=false;
+
 	} else if (currwpm>0) {
 		oled_set_cursor(16, 7);
 		oled_write("WPM: ", false);
-    oled_set_cursor(20, 7);
+        oled_set_cursor(20, 7);
 		oled_write(wpm_text, false);
+		last_typing = timer_read();
+				logo=false;
 	}
 
 
-oled_set_cursor(0, 0);
+    oled_set_cursor(0, 0);
       // Host Keyboard Layer Status
 
+    if (logo) {
+        return false;
+    }
 
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
@@ -125,23 +156,15 @@ oled_set_cursor(0, 0);
         case _LOWER:
             oled_write_P(PSTR("PGUPDOWN"), false);
             break;
-        default:
-            // Or use the write_ln shortcut over adding '\n' to the end of your string
-            oled_write_ln_P(PSTR("Undefined"), false);
     }
-oled_set_cursor(1, 1);
 
     // Host Keyboard LED Status
     led_t led_state = host_keyboard_led_state();
     if((led_state.num_lock  || led_state.caps_lock || led_state.scroll_lock) ){
+        oled_set_cursor(1, 1);
     oled_write_P(led_state.num_lock ? PSTR(" NUM") : PSTR("    "), false);
     oled_write_P(led_state.caps_lock ? PSTR(" CAP") : PSTR("    "), false);
     oled_write_P(led_state.scroll_lock ? PSTR(" SCR") : PSTR("    "), false);
-    } else if (!(led_state.num_lock  || led_state.caps_lock || led_state.scroll_lock) && (timer_elapsed(timer2) > graph_refresh_interval*128)) {
-      oled_set_cursor(0, 1);
-
-      oled_write_P(PSTR(" gluap ") ,false);
-      timer2 =timer_read();
     }
   return false;
 }

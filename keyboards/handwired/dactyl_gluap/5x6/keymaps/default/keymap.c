@@ -48,7 +48,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 int timer = 0;
-int timer2 =0;
+int timer2 = 0;
+int timer_invert = 0;
 int last_typing = 0;
 bool logo= false;
 char wpm_text[5]="asdf";
@@ -73,6 +74,22 @@ static void render_logo(void) {
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  3,  7, 15, 31, 63, 63,127,127,127,127,127,126,126,126,126,254,254,254,254,254,126,126,127,127,127,127,127, 63, 63, 15,  7,  7,  3,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 48, 79, 74, 74,105, 48,  0, 15,  0,  0, 15,  8,  8,  8, 15,  0,  0, 15,  9,  9, 15,  0,  0,127,  8,  8,  8,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     };
     oled_write_raw_P(raw_logo, sizeof(raw_logo));
+     oled_scroll_set_speed(4);
+
+// Begin scrolling the entire display right
+// Returns true if the screen was scrolling or starts scrolling
+// NOTE: display contents cannot be changed while scrolling
+ oled_scroll_left();
+ oled_set_brightness(8);
+}
+
+void disable_logo(void) {
+    if (logo) {
+        logo = false;
+        oled_clear();
+        oled_scroll_off();
+        oled_set_brightness(255);
+    }
 }
 
 bool oled_task_user(void) {
@@ -115,27 +132,27 @@ bool oled_task_user(void) {
 
 	//formatting for triple digit WPM vs double digits, then print WPM readout
 	if(currwpm>100){
-		oled_set_cursor(14, 7);
-		oled_write("WPM: ", false);
+		oled_set_cursor(13, 7);
+		oled_write(" WPM: ", false);
 		oled_set_cursor(18, 7);
 		oled_write(wpm_text, false);
 		last_typing = timer_read();
-		logo=false;
+		disable_logo();
 	} else if (currwpm >= 10){
-		oled_set_cursor(15, 7);
-		oled_write("WPM: ", false);
+		oled_set_cursor(14, 7);
+		oled_write(" WPM: ", false);
 		oled_set_cursor(19, 7);
 		oled_write(wpm_text, false);
 		last_typing = timer_read();
-				logo=false;
+		disable_logo();
 
 	} else if (currwpm>0) {
-		oled_set_cursor(16, 7);
-		oled_write("WPM: ", false);
+		oled_set_cursor(15, 7);
+		oled_write(" WPM: ", false);
         oled_set_cursor(20, 7);
 		oled_write(wpm_text, false);
 		last_typing = timer_read();
-				logo=false;
+		disable_logo();
 	}
 
 

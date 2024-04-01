@@ -1,4 +1,4 @@
-    #include "5x6.h"
+#include "5x6.h"
 
 
 #ifdef SSD1306OLED
@@ -20,4 +20,3 @@ void matrix_init_kb(void) {
 
 	matrix_init_user();
 };
-

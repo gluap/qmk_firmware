@@ -31,6 +31,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_MAX_SPEED      7
 #define MOUSEKEY_WHEEL_DELAY 0
 
+/* key matrix size */
+// Rows are doubled-up
+
+
+
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE 2
 

@@ -1,8 +1,9 @@
-/* A standard layout for the Dactyl Manuform 5x6 Keyboard */ 
+/* A standard layout for the Dactyl Manuform 5x6 Keyboard */
 
 #include QMK_KEYBOARD_H
 #include <keymap_german.h>
 #include <stdlib.h>
+#include <config.h>
 
 
 #define _QWERTY 0
@@ -22,7 +23,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     MT(MOD_LALT,KC_DEL) , MT(MOD_LCTL,KC_ESC),                                                          DE_PLUS, DE_BSLS,
                                         MT(MOD_LALT,KC_DEL),MO(_RAISE),                      KC_LGUI,  MT(MOD_RALT,KC_ENTER),
                                         MT(MOD_LSFT,KC_BSPC), MO(_LOWER),                        MT(MOD_LCTL,KC_TAB), KC_SPC
-  ),      
+  ),
   [_LOWER] = LAYOUT_5x6(
 
      KC_TILD,KC_EXLM, KC_AT ,KC_HASH,KC_DLR ,KC_PERC,                        KC_CIRC,KC_AMPR,KC_ASTR,KC_LPRN,KC_RPRN,KC_DEL,
@@ -57,9 +58,9 @@ float max_wpm = 140.0f; //WPM value at the top of the graph window
 int graph_refresh_interval = 160; //in milliseconds
 int graph_area_fill_interval = 64;
 
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 
-void oled_task_user(void) {
+bool oled_task_user(void) {
 
 	//get current WPM value
 	currwpm = get_current_wpm();
@@ -82,14 +83,14 @@ void oled_task_user(void) {
 		}
 
 		//then move the entire graph one pixel to the right
-		oled_pan(false); 
+		oled_pan(false);
 
 		//refresh the timer for the next iteration
 		timer = timer_read();
 
 	}
 	//format current WPM value into a printable string
-	
+
 
 	//formatting for triple digit WPM vs double digits, then print WPM readout
 	if(currwpm>100){
@@ -106,13 +107,13 @@ void oled_task_user(void) {
 		oled_set_cursor(16, 7);
 		oled_write("WPM: ", false);
     oled_set_cursor(20, 7);
-		oled_write(wpm_text, false);		
+		oled_write(wpm_text, false);
 	}
 
 
 oled_set_cursor(0, 0);
       // Host Keyboard Layer Status
-    
+
 
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
@@ -140,9 +141,9 @@ oled_set_cursor(1, 1);
       oled_set_cursor(0, 1);
 
       oled_write_P(PSTR(" gluap ") ,false);
-      timer2 =timer_read(); 
+      timer2 =timer_read();
     }
-
+  return false;
 }
 
-#endif 
+#endif

@@ -4,6 +4,7 @@
     "maintainer": "qmk",
     "width": 17,
     "height": 8,
+
     "layouts": {
         "LAYOUT_5x6": {
             "layout": [
@@ -63,14 +64,10 @@
                 {"label":"L45", "x":5, "y":5},
                 {"label":"R40", "x":11, "y":5},
                 {"label":"R41", "x":12, "y":5},
-                {"label":"L54", "x":6, "y":6},
-                {"label":"L55", "x":7, "y":6},
-                {"label":"R50", "x":9, "y":6},
-                {"label":"R51", "x":10, "y":6},
-                {"label":"L52", "x":6, "y":7},
-                {"label":"L53", "x":7, "y":7},
-                {"label":"R52", "x":9, "y":7},
-                {"label":"R53", "x":10, "y":7}
+                {"label":"L40", "x":6, "y":6},
+                {"label":"L41", "x":7, "y":6},
+                {"label":"R40", "x":9, "y":6},
+                {"label":"R41", "x":10, "y":6},
             ]
         }
     }

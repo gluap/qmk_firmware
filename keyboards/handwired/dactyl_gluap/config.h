@@ -18,11 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "config_common.h"
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0x444D
-#define MANUFACTURER    gluap
+#define MANUFACTURER    "gluap"
 
 /* mouse config */
 #define MOUSEKEY_INTERVAL       20
@@ -67,3 +66,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_ONESHOT
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
+
+
+#define IS_COMMAND() ( keyboard_report->mods == (MOD_BIT(KC_LSFT) | MOD_BIT(KC_LCTL)| MOD_BIT(KC_LALT) ))

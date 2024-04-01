@@ -18,6 +18,7 @@ RGBLIGHT_ENABLE = no       # Enable WS2812 RGB underlight.
 
 # Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE
 SLEEP_LED_ENABLE = no    # Breathing sleep LED during USB suspend
-OLED_ENABLE = no
+OLED_ENABLE = yes
+# enable on master, disable on slave, independently from which side is master
 
-OLED_DRIVER = SSD1306 # Selects the right driver
+OLED_DRIVER = ssd1306 # Selects the right driver
